@@ -178,7 +178,7 @@ return {
         
       -- 追加の便利なキーマップ
       -- Ctrl+w でバッファを閉じる (ブラウザのタブを閉じるのと同じ)
-      vim.keymap.set('n', '<C-w>', ':bdelete<CR>', { 
+      vim.keymap.set('n', '<C-x>', ':bdelete<CR>', { 
 
         silent = true, 
         desc = 'Close buffer (like closing browser tab)' 
