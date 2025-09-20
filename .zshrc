@@ -139,14 +139,14 @@ fcat() {
 }
 
 # ファイルを選択してless/moreで表示
-fl() {
+fless() {
   local file
   file=$(find ${1:-.} -type f 2>/dev/null | fzf --prompt="View file > " --preview="head -100 {}")
   [ -n "$file" ] && less "$file"
 }
 
 # 隠しファイルも含めてファイル検索
-fa() {
+ffind() {
   local file
   file=$(find ${1:-.} -name ".*" -o -type f 2>/dev/null | fzf --prompt="All files > " --preview="head -100 {}")
   [ -n "$file" ] && echo "$file"
