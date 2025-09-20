@@ -46,17 +46,20 @@ export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
 
 alias win32yank="win32yank.exe"
 
+# git log から選択して show
 gshow() {
   local hash=$(git log --oneline | fzf | awk '{print $1}')
   [ -n "$hash" ] && git show "$hash"
 }
 
+# git branch を選択して checkout
 gcheckout() {
   local branch
   branch=$(git branch -a | grep -v HEAD | sed 's/remotes\/origin\///' | sort | uniq | fzf --prompt="Branch > ")
   [ -n "$branch" ] && git checkout "${branch#* }"
 }
 
+# git branch を選択して merge
 gmerge() {
   local branch
   branch=$(git branch | grep -v "^\*" | fzf --prompt="Merge branch > ")
@@ -90,12 +93,6 @@ gadd() {
   local files
   files=$(git status --porcelain | awk '{print $2}' | fzf -m --prompt="Add files > ")
   [ -n "$files" ] && echo "$files" | xargs git add
-}
-
-# git log --onelineをより見やすく、選択してshow
-glog() {
-  git log --color=always --format="%C(cyan)%h %C(blue)%ar %C(auto)%s %C(yellow)%d%C(reset)" |
-  fzf --ansi --preview="git show --color=always {1}" --bind="enter:execute(git show --color=always {1} | less -R)"
 }
 
 # remoteブランチも含めてcheckout
