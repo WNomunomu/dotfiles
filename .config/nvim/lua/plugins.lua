@@ -67,12 +67,12 @@ return {
       require("mason-lspconfig").setup({
         ensure_installed = {
           "lua_ls",
-          "ts_ls", 
+          "ts_ls",
           "pyright",
           "clangd",
         }
       })
-      
+
       -- 診断設定
       vim.diagnostic.config({
         virtual_text = true,
@@ -91,9 +91,8 @@ return {
         },
       })
 
-
       -- 診断記号を設定
-      local signs = { Error = " ", Warn = " ", Hint = "󰌵 ", Info = " " }
+      local signs = { Error = " ", Warn = " ", Hint = "💡 ", Info = " " }
 
       for type, icon in pairs(signs) do
         local hl = "DiagnosticSign" .. type
@@ -104,7 +103,6 @@ return {
       vim.api.nvim_set_hl(0, "DiagnosticUnderlineError", { undercurl = true, sp = "Red" })
       vim.api.nvim_set_hl(0, "DiagnosticUnderlineWarn", { undercurl = true, sp = "Orange" })
       vim.api.nvim_set_hl(0, "DiagnosticUnderlineInfo", { undercurl = true, sp = "Blue" })
-
       vim.api.nvim_set_hl(0, "DiagnosticUnderlineHint", { undercurl = true, sp = "Green" })
 
       -- Neovim 0.11+ の新しいAPI使用
@@ -114,16 +112,15 @@ return {
         vim.lsp.config.pyright = {}
         vim.lsp.config.clangd = {}
       else
-
         local lspconfig = require("lspconfig")
         local servers = { "lua_ls", "ts_ls", "pyright", "clangd" }
-        
+
         for _, server in ipairs(servers) do
           lspconfig[server].setup({})
         end
       end
     end,
-  },  
+  },
 
 
   -- 補完
@@ -151,50 +148,73 @@ return {
       })
     end,
   },
-  
+
   -- Bufferline with browser-like tab navigation
   {
     'akinsho/bufferline.nvim',
     version = "*",
     dependencies = 'nvim-tree/nvim-web-devicons',
-
     config = function()
       vim.opt.termguicolors = true
       require("bufferline").setup({
         options = {
-          -- ブラウザライクな見た目のオプション
           show_buffer_close_icons = true,
           show_close_icon = true,
-          separator_style = "slant", -- または "thick", "thin", "padded_slant"
-
+          separator_style = "slant",
           enforce_regular_tabs = false,
           always_show_bufferline = true,
         }
       })
-      
+
       -- ブラウザライクなタブナビゲーション
       vim.keymap.set("n", "<C-h>", "<cmd>bprev<CR>")
       vim.keymap.set("n", "<C-l>", "<cmd>bnext<CR>") 
-        
-      -- 追加の便利なキーマップ
-      -- Ctrl+w でバッファを閉じる (ブラウザのタブを閉じるのと同じ)
-      vim.keymap.set('n', '<C-x>', ':bdelete<CR>', { 
 
+      -- Ctrl+x でバッファを閉じる
+      vim.keymap.set('n', '<C-x>', ':bdelete<CR>', { 
         silent = true, 
         desc = 'Close buffer (like closing browser tab)' 
       })
-      
-      -- Alt+数字 でバッファを直接選択
+      -- Alt+数字でバッファを直接選択
       for i = 1, 9 do
         vim.keymap.set('n', '<A-' .. i .. '>', ':BufferLineGoToBuffer ' .. i .. '<CR>', { 
           silent = true, 
           desc = 'Go to buffer ' .. i 
-
         })
       end
     end
+  },
+  {
+    "sindrets/diffview.nvim",
 
-
+    dependencies = "nvim-lua/plenary.nvim",
+    config = function()
+      require("diffview").setup({
+        diff_binaries = false,
+        enhanced_diff_hl = false,
+        git_cmd = { "git" },
+        use_icons = true,
+      })
+    end,
+    cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles" },
+    keys = {
+      { "<leader>do", "<cmd>DiffviewOpen<cr>", desc = "Open Diffview" },
+      { "<leader>dc", "<cmd>DiffviewClose<cr>", desc = "Close Diffview" },
+    },
+  },
+  {
+    "lewis6991/gitsigns.nvim",
+    config = function()
+      require("gitsigns").setup({
+        signs = {
+          add = { text = "+" },
+          change = { text = "~" },
+          delete = { text = "-" },
+          topdelete = { text = "‾" },
+          changedelete = { text = "~" },
+        },
+      })
+    end,
   },
   {
     "nvim-tree/nvim-tree.lua",
@@ -212,7 +232,32 @@ return {
         git = {
           enable = true,
           ignore = true,
-        }
+          timeout = 5000,
+          show_on_dirs = true,
+          show_on_open_dirs = false,
+        },
+        renderer = {
+          icons = {
+            show = {
+              git = true,
+            },
+            git_placement = "after",
+            glyphs = {
+              git = {
+                unstaged = "M",   -- Modified (unstaged)
+                staged = "A",     -- Added/staged
+                unmerged = "C",   -- Unmerged
+                renamed = "R",    -- Renamed
+                untracked = "U", -- Untracked
+                deleted = "D",    -- Deleted
+                ignored = "!"     -- Ignored
+              }
+            }
+          },
+          highlight_git = true,
+          highlight_opened_files = "name",
+        },
+        view = {},
       }
     end,
   },
