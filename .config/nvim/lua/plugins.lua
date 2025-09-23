@@ -92,7 +92,7 @@ return {
       })
 
       -- 診断記号を設定
-      local signs = { Error = " ", Warn = " ", Hint = "💡 ", Info = " " }
+      local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
 
       for type, icon in pairs(signs) do
         local hl = "DiagnosticSign" .. type
@@ -231,7 +231,6 @@ return {
       require("nvim-tree").setup {
         git = {
           enable = true,
-          ignore = true,
           timeout = 5000,
           show_on_dirs = true,
           show_on_open_dirs = false,
