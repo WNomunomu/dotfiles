@@ -23,6 +23,7 @@ alias k="kubectl"
 alias cal="ncal -C"
 alias yolo="claude --dangerously-skip-permissions"
 alias clip="clip.exe"
+alias vim="nvim"
 
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
