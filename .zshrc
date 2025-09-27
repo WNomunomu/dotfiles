@@ -91,7 +91,7 @@ gdiff() {
 # git addを選択したファイルで実行
 gadd() {
   local files
-  files=$(git status --porcelain | awk '{print $2}' | fzf -m --prompt="Add files > ")
+  files=$(git status --porcelain | sed 's/^...//' | fzf -m --prompt="Add files > ")
   [ -n "$files" ] && echo "$files" | xargs git add
 }
 
