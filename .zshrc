@@ -24,6 +24,7 @@ alias cal="ncal -C"
 alias yolo="claude --dangerously-skip-permissions"
 alias clip="clip.exe"
 alias vim="nvim"
+alias g++='g++ -std=c++20'
 
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
