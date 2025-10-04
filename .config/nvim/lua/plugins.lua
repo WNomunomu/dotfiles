@@ -159,17 +159,40 @@ return {
       require("bufferline").setup({
         options = {
           show_buffer_close_icons = true,
+          show_tab_indicators = true,
           show_close_icon = true,
-          separator_style = "slant",
+          separator_style = "thin",
           enforce_regular_tabs = false,
           always_show_bufferline = true,
+          offsets = {
+            {
+              text = "EXPLORER",
+              filetype = "NvimTree",
+              separator = true,
+              text_align = "left",
+            },
+          },
+        },
+        highlights = {
+          buffer_selected = {
+            fg = '#e6edf3',
+            bg = '#0d1117',
+            bold = true,
+            italic = false,
+          },
+          buffer_visible = {
+            fg = '#7d8590',
+            bg = '#161b22',
+          },
+          buffer = {
+            fg = '#7d8590',
+            bg = '#161b22',
+          },
         }
       })
-
       -- ブラウザライクなタブナビゲーション
       vim.keymap.set("n", "<C-h>", "<cmd>bprev<CR>")
       vim.keymap.set("n", "<C-l>", "<cmd>bnext<CR>") 
-
       -- Ctrl+x でバッファを閉じる
       vim.keymap.set('n', '<C-x>', ':bdelete<CR>', { 
         silent = true, 
@@ -226,6 +249,7 @@ return {
     keys = {
       {mode = "n", "<C-n>", "<cmd>NvimTreeToggle<CR>", desc = "NvimTreeをトグルする"},
       {mode = "n", "<C-m>", "<cmd>NvimTreeFocus<CR>", desc = "NvimTreeにフォーカス"},
+      {mode = "n", "<leader>ff", "<cmd>NvimTreeFindFile<CR>", desc = "NvimTreeで編集中のファイルに飛ぶ"},
     },
     config = function()
       require("nvim-tree").setup {
@@ -239,6 +263,7 @@ return {
           show_on_open_dirs = false,
         },
         renderer = {
+          indent_width = 1,
           icons = {
             show = {
               git = true,
@@ -259,7 +284,9 @@ return {
           highlight_git = true,
           highlight_opened_files = "name",
         },
-        view = {},
+        view = {
+          width = 35,
+        },
       }
     end,
   },
