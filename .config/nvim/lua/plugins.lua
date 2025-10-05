@@ -209,12 +209,14 @@ return {
   },
   {
     "sindrets/diffview.nvim",
-
-    dependencies = "nvim-lua/plenary.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
+    },
     config = function()
       require("diffview").setup({
         diff_binaries = false,
-        enhanced_diff_hl = false,
+        enhanced_diff_hl = true,
         git_cmd = { "git" },
         use_icons = true,
       })
@@ -317,9 +319,7 @@ return {
       require('lualine').setup {
         options = {
           icons_enabled = true,
-          theme = 'auto',
-          component_separators = { left = '', right = ''},
-          section_separators = { left = '', right = ''},
+          theme = 'nightfly',
           disabled_filetypes = {
             statusline = {},
             winbar = {},
@@ -355,6 +355,38 @@ return {
         extensions = {}
       }
     end
+  },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    branch = 'master',
+    lazy = false,
+    build = ":TSUpdate",
+    config = function()
+      require("nvim-treesitter.configs").setup({
+        -- List of parsers to install
+        ensure_installed = {
+          "lua",
+          "vim",
+          "vimdoc",
+          "javascript",
+          "typescript",
+          "python",
+          "html",
+          "css",
+          "tsx",
+          "vue",
+          "ruby",
+          "cpp",
+          "c",
+          "java",
+          "kotlin",
+        },
+        highlight = {
+          enable = true,
+          additional_vim_regex_highlighting = false,
+        }
+      })
+    end,
   },
 }
 
