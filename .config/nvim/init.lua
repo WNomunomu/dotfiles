@@ -1,8 +1,6 @@
 require('config.options')
 require('config.keymap')
-require('plugins')
 require('config.lazy')
-require('oil').setup()
 
 vim.opt.clipboard = "unnamedplus"
 vim.opt.termguicolors = true
