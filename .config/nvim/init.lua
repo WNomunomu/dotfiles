@@ -5,6 +5,7 @@ require('config.lazy')
 require('oil').setup()
 
 vim.opt.clipboard = "unnamedplus"
+vim.opt.termguicolors = true
 
 if vim.fn.has('wsl') == 1 then
   vim.g.clipboard = {
