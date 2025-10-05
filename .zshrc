@@ -48,6 +48,8 @@ export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
 
 alias win32yank="win32yank.exe"
 
+echo -ne '\e[6 q'
+
 # git log から選択して show
 gshow() {
   local hash=$(git log --oneline | fzf | awk '{print $1}')
@@ -183,3 +185,4 @@ drun() {
   [ -n "$image" ] && docker run -it "$image" ${1:-bash}
 }
 
+. "/home/kohsei/.deno/env"
