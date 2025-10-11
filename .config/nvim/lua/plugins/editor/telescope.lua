@@ -9,6 +9,15 @@ return {
         layout_strategy = "horizontal",
         layout_config = { prompt_position = "top" },
         sorting_strategy = "ascending",
+        file_ignore_patterns = {
+          ".git/",
+          "node_modules"
+        },
+      },
+      pickers = {
+        find_files = {
+          hidden = true,
+        },
       },
     })
 
