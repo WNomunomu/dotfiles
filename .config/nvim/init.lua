@@ -26,3 +26,10 @@ vim.api.nvim_create_autocmd('VimLeave', {
   end,
 })
 
+vim.cmd([[
+  highlight Normal guibg=NONE ctermbg=NONE
+  highlight NormalNC guibg=NONE ctermbg=NONE
+]])
+
+vim.cmd('highlight Normal ctermbg=234')
+
