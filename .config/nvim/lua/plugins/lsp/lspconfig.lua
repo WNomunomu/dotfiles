@@ -13,6 +13,8 @@ return {
         "ts_ls",
         "pyright",
         "clangd",
+        "ruby_lsp",
+        "gopls",
       }
     })
 
@@ -53,9 +55,10 @@ return {
       vim.lsp.config.ts_ls = {}
       vim.lsp.config.pyright = {}
       vim.lsp.config.clangd = {}
+      vim.lsp.config.gopls = {}
     else
       local lspconfig = require("lspconfig")
-      local servers = { "lua_ls", "ts_ls", "pyright", "clangd" }
+      local servers = { "lua_ls", "ts_ls", "pyright", "clangd", "gopls" }
 
       for _, server in ipairs(servers) do
         lspconfig[server].setup({})
