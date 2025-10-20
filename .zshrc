@@ -187,3 +187,5 @@ drun() {
 }
 
 . "/home/kohsei/.deno/env"
+export PATH=$PATH:/usr/local/go/bin
+
