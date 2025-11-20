@@ -3,6 +3,7 @@ local keymap = vim.keymap.set
 -- 基本キーマップ
 keymap('i', 'jj', '<Esc>', { silent = true })
 
+keymap('n', '<C-a>', 'ggVG', { silent = true })
 keymap('n', '<leader>m', '<cmd>Mason<cr>', {})
 
 -- LSPキーマップ
