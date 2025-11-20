@@ -22,6 +22,9 @@ return {
         "c",
         "java",
         "kotlin",
+        "go",
+        "gomod",
+        "gosum",
       },
       highlight = {
         enable = true,
