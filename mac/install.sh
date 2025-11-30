@@ -79,7 +79,7 @@ main() {
 
     # mytheme.zsh-theme の全体をシンボリックリンク
     if [ -d "$DOTFILES_DIR/mytheme.zsh-theme" ]; then
-        create_symlink "$DOTFILES_DIR/mytheme.zsh-theme" "$HOME/.oh-my-zsh/custom/themes"
+        create_symlink "$DOTFILES_DIR/mytheme.zsh-theme" "$HOME/.oh-my-zsh/custom/themes/mytheme.zsh-theme"
     fi
     
     log_info "Dotfiles installation completed!"
