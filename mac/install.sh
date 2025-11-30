@@ -77,9 +77,14 @@ main() {
         create_symlink "$DOTFILES_DIR/.config/nvim" "$HOME/.config/nvim"
     fi
 
-    # mytheme.zsh-theme の全体をシンボリックリンク
+    # mytheme.zsh-theme
     if [ -f "$DOTFILES_DIR/mytheme.zsh-theme" ]; then
         create_symlink "$DOTFILES_DIR/mytheme.zsh-theme" "$HOME/.oh-my-zsh/custom/themes/mytheme.zsh-theme"
+    fi
+
+    # alacritty.toml
+    if [ -f "$DOTFILES_DIR/alacritty.toml" ]; then
+        create_symlink "$DOTFILES_DIR/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
     fi
     
     log_info "Dotfiles installation completed!"
