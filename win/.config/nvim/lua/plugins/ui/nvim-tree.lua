@@ -47,5 +47,17 @@ return {
         width = 35,
       },
     }
+
+    -- BufEnter時に nvimtree を同期させるオートコマンド
+    vim.api.nvim_create_autocmd("BufEnter", {
+      callback = function()
+        local api = require("nvim-tree.api")
+        local current_file = vim.fn.expand("%:p")
+        
+        if vim.fn.filereadable(current_file) == 1 then
+          api.tree.find_file(current_file, false)
+        end
+      end,
+    })
   end,
 }
