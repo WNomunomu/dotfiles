@@ -26,6 +26,7 @@ alias yolo="claude --dangerously-skip-permissions"
 alias clip="clip.exe"
 alias vim="nvim"
 alias g++='g++ -std=c++20'
+alias tanuki='brave web.whatsapp.com'
 
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
@@ -188,4 +189,44 @@ drun() {
 
 . "/home/kohsei/.deno/env"
 export PATH=$PATH:/usr/local/go/bin
+export PATH="$HOME/.local/bin:$PATH"
+
+dc-down() {
+  devcontainer down --workspace-folder . 2>/dev/null || \
+    docker ps --filter "label=devcontainer.local_folder=$(pwd)" --format '{{.ID}}' | xargs -r docker stop
+}
+
+dc() {
+  case "$1" in
+    up)
+      shift
+      devcontainer up --workspace-folder . "$@"
+      ;;
+    exec)
+      shift
+      devcontainer exec --workspace-folder . "$@"
+      ;;
+    down)
+      dc-down
+      ;;
+    rebuild)
+      shift
+      devcontainer up --workspace-folder . --remove-existing-container "$@"
+      ;;
+    shell)
+      devcontainer exec --workspace-folder . /bin/bash 2>/dev/null || \
+      devcontainer exec --workspace-folder . /bin/sh
+      ;;
+    *)
+      echo "Usage: dc {up|exec|down|rebuild|shell}"
+      echo ""
+      echo "Commands:"
+      echo "  up      - Build and start the devcontainer"
+      echo "  exec    - Execute a command in the devcontainer"
+      echo "  down    - Stop the devcontainer"
+      echo "  rebuild - Rebuild the devcontainer from scratch"
+      echo "  shell   - Open a shell in the devcontainer"
+      ;;
+  esac
+}
 
