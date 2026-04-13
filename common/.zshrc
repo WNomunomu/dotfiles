@@ -25,7 +25,7 @@ plugins=(git kube-ps1)
 PROMPT='$(kube_ps1)'$PROMPT
 source $ZSH/oh-my-zsh.sh
 
-eval $(dircolors -b ~/.dircolors)
+# eval $(dircolors -b ~/.dircolors)
 
 alias -s {gif,jpg,jpeg,png,bmp}='display'
 alias -s {html,pdf,ppt,pptx,xls,xlsx,doc,docx}=open
@@ -129,7 +129,10 @@ pnpm() { _nvm_load; pnpm "$@"; }
 
 export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
 
-echo -ne '\e[6 q'
+# プロンプト描画前に毎回カーソルを細いバー（steady bar）に戻す。
+# nvim や tmux のコピーモードなどから戻った際にカーソルが太いまま残るのを防ぐ。
+_reset_cursor_beam() { print -n '\e[6 q' }
+precmd_functions+=(_reset_cursor_beam)
 
 # git log から選択して show
 gshow() {
