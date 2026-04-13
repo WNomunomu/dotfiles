@@ -17,7 +17,7 @@ blink_timeout = 0
 live_config_reload = true
 working_directory = "~"
 import = [
-    "~/dotfiles/mac/github_dark_default.toml"
+    "~/dotfiles/mac/github_dark_tritanopia.toml"
 ]
 
 [font]
