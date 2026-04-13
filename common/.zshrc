@@ -3,6 +3,23 @@ export ZSH="$HOME/.oh-my-zsh"
 # ZSH_THEME="geoffgarside"
 ZSH_THEME="mytheme"
 
+ZSH_DISABLE_COMPFIX=true
+
+# Speed: intercept oh-my-zsh's compinit to use -C (skip compaudit, ~270ms faster)
+# oh-my-zsh already validates/invalidates the dump before calling compinit,
+# so -C is safe here. On first run or when plugins change, dump is rebuilt once.
+autoload -Uz compinit
+function compinit() {
+  unfunction compinit
+  autoload -Uz compinit
+  local dump="${ZSH_COMPDUMP:-${ZDOTDIR:-$HOME}/.zcompdump}"
+  if [[ -f "$dump" ]]; then
+    compinit -C -d "$dump"
+  else
+    compinit -d "$dump"
+  fi
+}
+
 plugins=(git kube-ps1)
 
 PROMPT='$(kube_ps1)'$PROMPT
@@ -37,10 +54,17 @@ if [[ "$(uname -s)" == "Linux" ]]; then
   alias win32yank="win32yank.exe"
 
   export PYENV_ROOT="$HOME/.pyenv"
-  export PATH="$PYENV_ROOT/bin:$PATH"
-  eval "$(pyenv init --path)"
+  # Static PATH (replaces `eval "$(pyenv init --path)"` to avoid 90ms subprocess)
+  export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"
 
-  eval "$(~/homebrew/bin/brew shellenv)"
+  # Static brew env (replaces `eval "$(brew shellenv)"` to avoid 20ms subprocess)
+  export HOMEBREW_PREFIX="$HOME/homebrew"
+  export HOMEBREW_CELLAR="$HOME/homebrew/Cellar"
+  export HOMEBREW_REPOSITORY="$HOME/homebrew"
+  fpath[1,0]="$HOME/homebrew/share/zsh/site-functions"
+  export PATH="$HOME/homebrew/bin:$HOME/homebrew/sbin${PATH+:$PATH}"
+  [ -z "${MANPATH-}" ] || export MANPATH=":${MANPATH#:}"
+  export INFOPATH="$HOME/homebrew/share/info:${INFOPATH:-}"
 
   . "/home/kohsei/.deno/env"
   export PATH=$PATH:/usr/local/go/bin
@@ -90,11 +114,18 @@ else
 fi
 
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+# Lazy load nvm: only initialize when nvm/node/npm/npx is first used
+_nvm_load() {
+  unset -f nvm node npm npx yarn pnpm
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+}
+nvm()  { _nvm_load; nvm  "$@"; }
+node() { _nvm_load; node "$@"; }
+npm()  { _nvm_load; npm  "$@"; }
+npx()  { _nvm_load; npx  "$@"; }
+yarn() { _nvm_load; yarn "$@"; }
+pnpm() { _nvm_load; pnpm "$@"; }
 
 export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
 
