@@ -9,7 +9,7 @@ return {
         layout_config = { prompt_position = "top" },
         sorting_strategy = "ascending",
         file_ignore_patterns = {
-          ".git/",
+          "%.git",
           "node_modules"
         },
         vimgrep_arguments = {
