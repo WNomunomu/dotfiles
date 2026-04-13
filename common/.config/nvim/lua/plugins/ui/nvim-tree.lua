@@ -7,7 +7,7 @@ return {
   },
   keys = {
     {mode = "n", "<C-n>", "<cmd>NvimTreeToggle<CR>", desc = "NvimTreeをトグルする"},
-    {mode = "n", "<C-m>", "<cmd>NvimTreeFocus<CR>", desc = "NvimTreeにフォーカス"},
+    {mode = "n", "<leader>e", "<cmd>NvimTreeFocus<CR>", desc = "NvimTreeにフォーカス"},
     {mode = "n", "<leader>ff", "<cmd>NvimTreeFindFile<CR>", desc = "NvimTreeで編集中のファイルに飛ぶ"},
   },
   config = function()

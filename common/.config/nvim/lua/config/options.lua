@@ -14,3 +14,10 @@ end
 
 opt.ignorecase = true
 opt.smartcase = true
+
+vim.opt.number = true
+vim.opt.relativenumber = true
+
+vim.keymap.set('n', '<leader>rn', function()
+  vim.opt.relativenumber = not vim.opt.relativenumber:get()
+end, { desc = "Toggle relative number" })
