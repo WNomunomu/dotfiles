@@ -11,8 +11,8 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-# dotfilesディレクトリのパス（このスクリプトがある場所）
-DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# dotfilesルートディレクトリのパス
+DOTFILES_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
 # ログ関数
 log_info() {
@@ -31,7 +31,7 @@ log_error() {
 backup_file() {
     local file="$1"
     local backup_file="${file}.backup.$(date +%Y%m%d_%H%M%S)"
-    
+
     if [ -e "$file" ] || [ -L "$file" ]; then
         log_warn "Backing up existing file: $file -> $backup_file"
         mv "$file" "$backup_file"
@@ -42,17 +42,17 @@ backup_file() {
 create_symlink() {
     local source="$1"
     local target="$2"
-    
+
     # ターゲットディレクトリが存在しない場合は作成
     local target_dir="$(dirname "$target")"
     if [ ! -d "$target_dir" ]; then
         log_info "Creating directory: $target_dir"
         mkdir -p "$target_dir"
     fi
-    
+
     # 既存のファイル/リンクがある場合はバックアップ
     backup_file "$target"
-    
+
     # シンボリックリンクを作成
     ln -s "$source" "$target"
     log_info "Created symlink: $target -> $source"
@@ -61,27 +61,19 @@ create_symlink() {
 # メイン処理
 main() {
     log_info "Starting dotfiles installation from: $DOTFILES_DIR"
-    
-    # .zshrc
-    if [ -f "$DOTFILES_DIR/.zshrc" ]; then
-        create_symlink "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
-    fi
-    
-    # .tmux.conf
-    if [ -f "$DOTFILES_DIR/.tmux.conf" ]; then
-        create_symlink "$DOTFILES_DIR/.tmux.conf" "$HOME/.tmux.conf"
-    fi
-    
-    # .config/nvim の全体をシンボリックリンク
-    if [ -d "$DOTFILES_DIR/.config/nvim" ]; then
-        create_symlink "$DOTFILES_DIR/.config/nvim" "$HOME/.config/nvim"
-    fi
 
-    # mytheme.zsh-theme の全体をシンボリックリンク
-    if [ -f "$DOTFILES_DIR/mytheme.zsh-theme" ]; then
-        create_symlink "$DOTFILES_DIR/mytheme.zsh-theme" "$HOME/.oh-my-zsh/custom/themes/mytheme.zsh-theme"
-    fi
-    
+    # .zshrc
+    create_symlink "$DOTFILES_DIR/common/.zshrc" "$HOME/.zshrc"
+
+    # .tmux.conf
+    create_symlink "$DOTFILES_DIR/common/.tmux.conf" "$HOME/.tmux.conf"
+
+    # .config/nvim の全体をシンボリックリンク
+    create_symlink "$DOTFILES_DIR/common/.config/nvim" "$HOME/.config/nvim"
+
+    # mytheme.zsh-theme
+    create_symlink "$DOTFILES_DIR/common/mytheme.zsh-theme" "$HOME/.oh-my-zsh/custom/themes/mytheme.zsh-theme"
+
     log_info "Dotfiles installation completed!"
     log_info ""
     log_info "Next steps:"
@@ -99,6 +91,7 @@ confirm() {
     echo "  ~/.zshrc"
     echo "  ~/.tmux.conf"
     echo "  ~/.config/nvim/"
+    echo "  ~/.oh-my-zsh/custom/themes/mytheme.zsh-theme"
     echo ""
     read -p "Continue? (y/N): " -n 1 -r
     echo
@@ -113,4 +106,3 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     confirm
     main
 fi
-

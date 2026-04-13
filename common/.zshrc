@@ -13,24 +13,81 @@ eval $(dircolors -b ~/.dircolors)
 alias -s {gif,jpg,jpeg,png,bmp}='display'
 alias -s {html,pdf,ppt,pptx,xls,xlsx,doc,docx}=open
 
-alias open="cmd.exe /C start"
-alias win="/mnt/c/Users/kohse"
-alias waseda="/mnt/c/Users/kohse/Documents/waseda"
-alias brave="/mnt/c/Program\ Files/BraveSoftware/Brave-Browser/Application/brave.exe"
-alias braves="brave -incognito"
-alias slack="/mnt/c/Users/kohse/AppData/Local/slack/*/slack.exe"
-alias line="/mnt/c/Users/kohse/AppData/Local/LINE/bin/*/LINE.exe"
 alias k="kubectl"
 alias cal="ncal -C"
 alias yolo="claude --dangerously-skip-permissions"
-alias clip="clip.exe"
 alias vim="nvim"
 alias g++='g++ -std=c++20'
-alias tanuki='brave web.whatsapp.com'
 
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init --path)"
+if [[ "$(uname -s)" == "Linux" ]]; then
+  # WSL / win
+  alias open="cmd.exe /C start"
+  alias win="/mnt/c/Users/kohse"
+  alias waseda="/mnt/c/Users/kohse/Documents/waseda"
+  alias brave="/mnt/c/Program\ Files/BraveSoftware/Brave-Browser/Application/brave.exe"
+  alias braves="brave -incognito"
+  alias slack="/mnt/c/Users/kohse/AppData/Local/slack/*/slack.exe"
+  alias line="/mnt/c/Users/kohse/AppData/Local/LINE/bin/*/LINE.exe"
+  alias tanuki='brave web.whatsapp.com'
+  alias clip="clip.exe"
+  alias powerconfig="powercfg.exe"
+  # alias high="powerconfig -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 && powercfg -setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c"
+  alias high="powerconfig -setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c && powerconfig -list"
+  alias balance="powerconfig -setactive SCHEME_BALANCED && powerconfig -list"
+  alias win32yank="win32yank.exe"
+
+  export PYENV_ROOT="$HOME/.pyenv"
+  export PATH="$PYENV_ROOT/bin:$PATH"
+  eval "$(pyenv init --path)"
+
+  eval "$(~/homebrew/bin/brew shellenv)"
+
+  . "/home/kohsei/.deno/env"
+  export PATH=$PATH:/usr/local/go/bin
+  export PATH="$HOME/.local/bin:$PATH"
+
+  dc-down() {
+    devcontainer down --workspace-folder . 2>/dev/null || \
+      docker ps --filter "label=devcontainer.local_folder=$(pwd)" --format '{{.ID}}' | xargs -r docker stop
+  }
+
+  dc() {
+    case "$1" in
+      up)
+        shift
+        devcontainer up --workspace-folder . "$@"
+        ;;
+      exec)
+        shift
+        devcontainer exec --workspace-folder . "$@"
+        ;;
+      down)
+        dc-down
+        ;;
+      rebuild)
+        shift
+        devcontainer up --workspace-folder . --remove-existing-container "$@"
+        ;;
+      shell)
+        devcontainer exec --workspace-folder . /bin/bash 2>/dev/null || \
+        devcontainer exec --workspace-folder . /bin/sh
+        ;;
+      *)
+        echo "Usage: dc {up|exec|down|rebuild|shell}"
+        echo ""
+        echo "Commands:"
+        echo "  up      - Build and start the devcontainer"
+        echo "  exec    - Execute a command in the devcontainer"
+        echo "  down    - Stop the devcontainer"
+        echo "  rebuild - Rebuild the devcontainer from scratch"
+        echo "  shell   - Open a shell in the devcontainer"
+        ;;
+    esac
+  }
+else
+  # mac
+  alias clip="pbcopy"
+fi
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -39,16 +96,7 @@ export NVM_DIR="$HOME/.nvm"
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
-eval "$(~/homebrew/bin/brew shellenv)"
-
-alias powerconfig="powercfg.exe"
-# alias high="powerconfig -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 && powercfg -setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c"
-alias high="powerconfig -setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c && powerconfig -list"
-alias balance="powerconfig -setactive SCHEME_BALANCED && powerconfig -list"
-
 export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
-
-alias win32yank="win32yank.exe"
 
 echo -ne '\e[6 q'
 
@@ -186,47 +234,3 @@ drun() {
   image=$(docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.ID}}" | tail -n +2 | fzf --prompt="Run image > " | awk '{print $1":"$2}')
   [ -n "$image" ] && docker run -it "$image" ${1:-bash}
 }
-
-. "/home/kohsei/.deno/env"
-export PATH=$PATH:/usr/local/go/bin
-export PATH="$HOME/.local/bin:$PATH"
-
-dc-down() {
-  devcontainer down --workspace-folder . 2>/dev/null || \
-    docker ps --filter "label=devcontainer.local_folder=$(pwd)" --format '{{.ID}}' | xargs -r docker stop
-}
-
-dc() {
-  case "$1" in
-    up)
-      shift
-      devcontainer up --workspace-folder . "$@"
-      ;;
-    exec)
-      shift
-      devcontainer exec --workspace-folder . "$@"
-      ;;
-    down)
-      dc-down
-      ;;
-    rebuild)
-      shift
-      devcontainer up --workspace-folder . --remove-existing-container "$@"
-      ;;
-    shell)
-      devcontainer exec --workspace-folder . /bin/bash 2>/dev/null || \
-      devcontainer exec --workspace-folder . /bin/sh
-      ;;
-    *)
-      echo "Usage: dc {up|exec|down|rebuild|shell}"
-      echo ""
-      echo "Commands:"
-      echo "  up      - Build and start the devcontainer"
-      echo "  exec    - Execute a command in the devcontainer"
-      echo "  down    - Stop the devcontainer"
-      echo "  rebuild - Rebuild the devcontainer from scratch"
-      echo "  shell   - Open a shell in the devcontainer"
-      ;;
-  esac
-}
-
