@@ -1,7 +1,6 @@
 return {
   "nvim-tree/nvim-tree.lua",
   version = "*",
-  lazy = false,
   dependencies = {
     "nvim-tree/nvim-web-devicons",
   },
@@ -13,12 +12,12 @@ return {
   config = function()
     require("nvim-tree").setup {
       filters = {
-        git_ignored = false,
+        git_ignored = true,
       },
       git = {
         enable = true,
-        timeout = 5000,
-        show_on_dirs = true,
+        timeout = 400,
+        show_on_dirs = false,
         show_on_open_dirs = false,
       },
       renderer = {
@@ -49,14 +48,19 @@ return {
     }
 
     -- BufEnter時に nvimtree を同期させるオートコマンド
+    -- nvim-tree が開いている時のみ実行し、無駄な処理を避ける
     vim.api.nvim_create_autocmd("BufEnter", {
       callback = function()
-        local api = require("nvim-tree.api")
         local current_file = vim.fn.expand("%:p")
-        
-        if vim.fn.filereadable(current_file) == 1 then
-          api.tree.find_file(current_file, false)
+        if current_file == "" or vim.fn.filereadable(current_file) ~= 1 then
+          return
         end
+        -- nvim-tree のウィンドウが開いているか確認
+        local nvim_tree_wins = vim.fn.win_findbuf(vim.fn.bufnr("NvimTree_1"))
+        if #nvim_tree_wins == 0 then
+          return
+        end
+        require("nvim-tree.api").tree.find_file(current_file, false)
       end,
     })
   end,
