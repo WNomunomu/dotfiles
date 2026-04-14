@@ -1,5 +1,6 @@
 return {
   "neovim/nvim-lspconfig",
+  event = { "BufReadPre", "BufNewFile" },
   dependencies = {
     "williamboman/mason.nvim",
     "williamboman/mason-lspconfig.nvim",
@@ -10,11 +11,12 @@ return {
     require("mason-lspconfig").setup({
       ensure_installed = {
         "lua_ls",
-        "ts_ls",
-        "pyright",
-        "clangd",
-        "ruby_lsp",
-        "gopls",
+        "terraformls",
+        -- "ts_ls",
+        -- "pyright",
+        -- "clangd",
+        -- "ruby_lsp",
+        -- "gopls",
       }
     })
 
@@ -52,13 +54,21 @@ return {
     -- Neovim 0.11+ の新しいAPI使用
     if vim.lsp.config then
       vim.lsp.config.lua_ls = {}
+      vim.lsp.config.terraformls = {}
       vim.lsp.config.ts_ls = {}
       vim.lsp.config.pyright = {}
       vim.lsp.config.clangd = {}
       vim.lsp.config.gopls = {}
     else
       local lspconfig = require("lspconfig")
-      local servers = { "lua_ls", "ts_ls", "pyright", "clangd", "gopls" }
+      local servers = {
+        "lua_ls",
+        "terraformls",
+        -- "ts_ls",
+        -- "pyright",
+        -- "clangd",
+        -- "gopls"
+      }
 
       for _, server in ipairs(servers) do
         lspconfig[server].setup({})
