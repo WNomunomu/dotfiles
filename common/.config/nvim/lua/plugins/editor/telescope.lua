@@ -1,6 +1,13 @@
 return {
   'nvim-telescope/telescope.nvim',
   dependencies = { 'nvim-lua/plenary.nvim' },
+  cmd = "Telescope",
+  keys = {
+    { '<C-p>', function() require('telescope.builtin').find_files() end, desc = "Find files" },
+    { '<C-f>', function() require('telescope.builtin').live_grep() end, desc = "Live grep" },
+    { '<leader>fr', function() require('telescope.builtin').live_grep({ additional_args = {} }) end, desc = "Live grep (regex)" },
+    { '<leader>fb', function() require('telescope.builtin').buffers() end, desc = "Buffers" },
+  },
   config = function()
     local telescope = require('telescope')
     telescope.setup({
@@ -34,13 +41,5 @@ return {
       },
     })
 
-    -- キーマップ
-    local builtin = require('telescope.builtin')
-    vim.keymap.set('n', '<C-p>', builtin.find_files, {})
-    vim.keymap.set('n', '<C-f>', builtin.live_grep, {})
-    vim.keymap.set('n', '<leader>fr', function()
-      builtin.live_grep({ additional_args = {} })
-    end, { desc = "Live grep (regex)" })
-    vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
   end,
 }
