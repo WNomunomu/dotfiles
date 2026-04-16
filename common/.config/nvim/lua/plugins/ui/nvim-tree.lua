@@ -17,7 +17,7 @@ return {
       git = {
         enable = true,
         timeout = 400,
-        show_on_dirs = false,
+        show_on_dirs = true,
         show_on_open_dirs = false,
       },
       renderer = {
