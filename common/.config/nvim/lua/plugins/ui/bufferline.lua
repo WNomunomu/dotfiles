@@ -42,10 +42,24 @@ return {
     -- ブラウザライクなタブナビゲーション
     vim.keymap.set("n", "<C-h>", "<cmd>bprev<CR>")
     vim.keymap.set("n", "<C-l>", "<cmd>bnext<CR>")
-    -- Ctrl+x でバッファを閉じる
-    vim.keymap.set('n', '<C-x>', ':bdelete<CR>', {
+    -- Ctrl+x でバッファを閉じる (VSCode風: 隣のタブに遷移、最後の1つなら enew)
+    vim.keymap.set('n', '<C-x>', function()
+      local bufs = vim.tbl_filter(function(b)
+        return vim.api.nvim_buf_is_valid(b) and vim.bo[b].buflisted
+      end, vim.api.nvim_list_bufs())
+      local cur = vim.api.nvim_get_current_buf()
+      if #bufs <= 1 then
+        vim.cmd('enew')
+        if vim.api.nvim_buf_is_valid(cur) then
+          vim.api.nvim_buf_delete(cur, { force = true })
+        end
+      else
+        vim.cmd('BufferLineCyclePrev')
+        vim.api.nvim_buf_delete(cur, { force = false })
+      end
+    end, {
       silent = true,
-      desc = 'Close buffer (like closing browser tab)'
+      desc = 'Close buffer (like closing VS Code tab)'
     })
     -- Alt+数字でバッファを直接選択
     for i = 1, 9 do
