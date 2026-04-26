@@ -25,6 +25,8 @@ return {
         "go",
         "gomod",
         "gosum",
+        "terraform",
+        "hcl",
       },
       highlight = {
         enable = true,
