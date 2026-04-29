@@ -45,10 +45,6 @@
     lazydocker
     imagemagick
 
-    # DBクライアント
-    mysql80
-    postgresql_16
-
     # Anthropic
     claude-code
   ];
