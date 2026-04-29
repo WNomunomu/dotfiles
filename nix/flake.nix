@@ -13,7 +13,15 @@
     let
       mkHome = { system, hostModule }:
         home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.${system};
+          pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfreePredicate = pkg:
+              builtins.elem (nixpkgs.lib.getName pkg) [
+                "terraform"
+                "ngrok"
+                "claude-code"
+              ];
+          };
           modules = [
             ./home/default.nix
             hostModule
